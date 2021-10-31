@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Quarterback Rushing Yardage - Michael Mallgrave&#39;s Github Site</title>
+<meta property="og:title" content="Quarterback Rushing Yardage - Michael Mallgrave&#39;s Github Site">
+
+
+  <link href='http://michaelmallgrave.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">5 min read</span>
+    
+
+    <h1 class="article-title">Quarterback Rushing Yardage</h1>
+
+    
+    <span class="article-date">2021-10-28</span>
+    
+
+    <div class="article-content">
+      
+<script src="http://michaelmallgrave.github.io/2021/10/28/quarterback-rushing-yardage/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>As the National Football League begins to evolve, the most important position on the field evolves with it. The NFL has had a wide range of quarterbacks, ranging from strictly pocket passers to some that have more success using their legs. Pocket passers were the standard in the NFL for a long time, with some notable names being Tom Brady, Drew Brees, and Phillip Rivers. Over time, the position has changed, and while their duties remain the same, their process and strategy changes as the game gets faster, smarter, and bigger. The standard of a quarterback used to be an accurate thrower inside of the pocket, with a potential roll-out every now and then, but how does the game change when that same quarterback can run and compete with every defender on the field? Dual-threat quarterbacks are more valuable to their team than pocket passers because of their ability to hit the defense in two ways, resulting in their team being more dynamic, elusive, and overall, better.</p>
+<p>First, I will load in tidyverse, as it helps with the visuals and processes.</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>In the NFL today, there are essentially two types of quarterbacks, pocket passers, and dual threats. A dual threat quarterback is a quarterback that makes his presence known in the passing game, as well as the running game, with specific game scripts and such that allow him to run the ball with freedom, whereas a pocket passer may not get that same opportunity. Dual-threat quarterbacks have not been the norm over the NFL’s lifetime, but with the competition getting tougher, the quarterback position has changed with it.</p>
+<p>Next, I can load in datasets, which contain important statistics regarding quarterbacks in the last few years. In our specific circumstance, dual threat quarterbacks.</p>
+<pre class="r"><code>sevenrush &lt;- read_csv(&quot;rushingdata/2017QBRush.csv&quot;)
+eightrush &lt;- read_csv(&quot;rushingdata/2018QBRushYds.csv&quot;)
+ninerush &lt;- read_csv(&quot;rushingdata/2019QBRushYds.csv&quot;)</code></pre>
+<p>There are a lot of questions and critiques over dual-threat quarterbacks, as the NFL is getting more and more every year. On one side of the spectrum, you have the people who believe a dual-threat quarterback is vital, so their game isn’t so one-dimensional. But on the other side, there is the argument where the dual-threat quarterback poses more of a threat to his own team because there is a larger chance of taking a hit. Injuries have been apparent with running quarterbacks over the years, such as Robert Griffin the 3rd, who had a very impressive year before tearing his knee up and never being the same again. Even then, dual-threat quarterbacks have become increasingly popular. I have highlighted certain names within the visuals who are slated as dual-threat. I took into account their rushing ability, how many designed run plays they recieve, and how efficient they are running the ball.</p>
+<p>In 2017, the premiere dual-threat quarterbacks were Russell Wilson, Dak Prescott, Deshaun Watson, Cam Newton, Mitchell Trubisky, and Marcus Mariota. Keep in mind that some of these names didn’t start all 16 games, some may have started halfway through the year or were utilized differently.</p>
+<pre class="r"><code>seatwo &lt;- sevenrush %&gt;% filter(Player == &quot;Russell Wilson&quot;)
+daltwo &lt;- sevenrush %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+houtwo &lt;- sevenrush %&gt;% filter(Player== &quot;Deshaun Watson&quot;)
+cartwo &lt;- sevenrush %&gt;% filter(Player == &quot;Cam Newton&quot;)
+chitwo &lt;- sevenrush %&gt;% filter(Player == &quot;Mitch Trubisky&quot;)
+tentwo &lt;- sevenrush %&gt;% filter(Player == &quot;Marcus Mariota&quot;)
+
+ggplot(sevenrush, aes(x=reorder(Player, `RushYds`), weight=`RushYds`)) + geom_bar() + geom_bar(data=seatwo, color=&quot;green&quot;) + geom_bar(data=daltwo, color=&quot;green&quot;)+ geom_bar(data=houtwo, color=&quot;green&quot;)+ geom_bar(data=cartwo, color=&quot;green&quot;)+ geom_bar(data=chitwo, color=&quot;green&quot;)+ geom_bar(data=tentwo, color=&quot;green&quot;)+ labs(title=&quot;2017 Dual-Threat Quarterbacks Top Rushing Charts&quot;, subtitle=&quot;Dual-threat quarterbacks pull away from pocket passers&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Quarterback&quot;, y=&quot;Rushing Yards&quot;) + theme_bw() + coord_flip() + theme_update()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/28/quarterback-rushing-yardage/index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>In 2018, we will remove Marcus Mariota, as he did not play/start. This is also the time where Josh Allen and Lamar Jackson were drafted, some of the most efficient rushing quarterbacks in the NFL today. Josh Allen is 2nd on the list, despite only starting 12 games his rookie year. Even more impressive is Lamar Jackson, topping the list despite starting only 6 games.</p>
+<pre class="r"><code>seaeight &lt;- eightrush %&gt;% filter(Player == &quot;Russell Wilson&quot;)
+daleight &lt;- eightrush %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+houeight &lt;- eightrush %&gt;% filter(Player== &quot;Deshaun Watson&quot;)
+careight &lt;- eightrush %&gt;% filter(Player == &quot;Cam Newton&quot;)
+chieight &lt;- eightrush %&gt;% filter(Player == &quot;Mitch Trubisky&quot;)
+bufeight &lt;- eightrush %&gt;% filter(Player == &quot;Josh Allen&quot;)
+baleight &lt;- eightrush %&gt;% filter(Player == &quot;Lamar Jackson&quot;)
+kceight &lt;- eightrush %&gt;% filter(Player == &quot;Patrick Mahomes&quot;)
+ ggplot(eightrush, aes(x=reorder(Player, `RushYds`), weight=`RushYds`)) + geom_bar() + geom_bar(data=seaeight, color=&quot;green&quot;) + geom_bar(data=daleight, color=&quot;green&quot;) + geom_bar(data=houeight, color=&quot;green&quot;) + geom_bar(data=kceight, color=&quot;green&quot;) + geom_bar(data=baleight, color=&quot;green&quot;) + geom_bar(data=bufeight, color=&quot;green&quot;)  + geom_bar(data=careight, color=&quot;green&quot;)+ geom_bar(data=chieight, color=&quot;green&quot;)  + labs(title=&quot;2018 Dual-Threat Quarterbacks Annihilate Rushing Category&quot;, subtitle=&quot;Dual-threat quarterbacks top rushing chart&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Quarterback&quot;, y=&quot;Rushing Yards&quot;) + coord_flip() + theme_bw() + theme_update()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/28/quarterback-rushing-yardage/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>In 2019, I added Kyler Murray, a former #1 overall pick. Kyler has had a lot of success with his running game in college, and it definitely translated well to the NFL.</p>
+<pre class="r"><code>seafive &lt;- ninerush %&gt;% filter(Player == &quot;Russell Wilson&quot;)
+dalfive &lt;- ninerush %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+houfive &lt;- ninerush %&gt;% filter(Player== &quot;Deshaun Watson&quot;)
+carfive &lt;- ninerush %&gt;% filter(Player == &quot;Cam Newton&quot;)
+chifive &lt;- ninerush %&gt;% filter(Player == &quot;Mitch Trubisky&quot;)
+buffive &lt;- ninerush %&gt;% filter(Player == &quot;Josh Allen&quot;)
+balfive &lt;- ninerush %&gt;% filter(Player == &quot;Lamar Jackson&quot;)
+arifive &lt;- ninerush %&gt;% filter(Player == &quot;Kyler Murray&quot;)
+ggplot(ninerush, aes(x=reorder(Player, `RushYds`), weight=`RushYds`)) + geom_bar() + geom_bar(data=seafive, color=&quot;green&quot;) + geom_bar(data=dalfive, color=&quot;green&quot;) + geom_bar(data=houfive, color=&quot;green&quot;) + geom_bar(data=arifive, color=&quot;green&quot;) + geom_bar(data=balfive, color=&quot;green&quot;) + geom_bar(data=buffive, color=&quot;green&quot;)  + geom_bar(data=carfive, color=&quot;green&quot;)+ geom_bar(data=chifive, color=&quot;green&quot;) + labs(title=&quot;2018 Dual-Threat Quarterbacks Continue to Destroy Competition&quot;, subtitle=&quot;Dual-threat quarterbacks continue to pull away from the pack&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Quarterback&quot;, y=&quot;Rushing Yards&quot;) + coord_flip() + theme_update()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/28/quarterback-rushing-yardage/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Probably the most impressive quarterback when it comes to rushing, Lamar Jackson started all 16 games in 2019, and won an MVP while taking the NFL by storm. Because of his rushing talent, defenses couldn’t necessarily defend both the run and the pass at the same time. Kyler Murray, Deshaun Watson, and Russell Wilson also had success running the ball in 2019. As you can see, dual-threat quarterbacks easily top the charts when it comes to rushing, but is passing a different story? Is the rushing ability really that much of a factor when it comes to a traditional quarterback?</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

@@ -8,14 +8,13 @@
     <language>en-us</language>
     <lastBuildDate>Tue, 01 Dec 2020 21:13:14 -0500</lastBuildDate><atom:link href="http://michaelmallgrave.github.io/tags/regression/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Hello R Markdown</title>
-      <link>http://michaelmallgrave.github.io/2020/12/01/hello-r-markdown/</link>
+      <title>Quarterback Rushing Yardage</title>
+      <link>http://michaelmallgrave.github.io/2020/12/01/quarterback-rushing-yardage/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       
-      <guid>http://michaelmallgrave.github.io/2020/12/01/hello-r-markdown/</guid>
-      <description>R Markdown This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see http://rmarkdown.rstudio.com.
-You can embed an R code chunk like this:
-summary(cars) ## speed dist ## Min. : 4.0 Min. : 2.00 ## 1st Qu.:12.0 1st Qu.: 26.00 ## Median :15.0 Median : 36.00 ## Mean :15.4 Mean : 42.</description>
+      <guid>http://michaelmallgrave.github.io/2020/12/01/quarterback-rushing-yardage/</guid>
+      <description>  R Markdown 2017: Russ, Dak, Watson, Cam, Tribusky, Mariota 2018: Russ, Dak,Mahomes, Watson, Cam, Trubisky, Allen, Lamar 2019: Russ, Dak Mahomes, Watson, Trubisky, Kyler, Allen, Lamar
+ </description>
     </item>
     
   </channel>

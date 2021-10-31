@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>All-Purpose Yardage/Wins - Michael Mallgrave&#39;s Github Site</title>
+<meta property="og:title" content="All-Purpose Yardage/Wins - Michael Mallgrave&#39;s Github Site">
+
+
+  <link href='http://michaelmallgrave.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">5 min read</span>
+    
+
+    <h1 class="article-title">All-Purpose Yardage/Wins</h1>
+
+    
+    <span class="article-date">2021-10-31</span>
+    
+
+    <div class="article-content">
+      
+<script src="http://michaelmallgrave.github.io/2021/10/31/all-purpose-yardage-wins/index_files/header-attrs/header-attrs.js"></script>
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>After loading in tidyverse, we will load in the datasets that show passer rating, wins, and all-purpose yards. All-purpose yardage is the sum of a player’s rushing and passing yards. Passer rating is essentially the rating at which the quarterback completed a game. Passer rating is calculated by taking into account completions, yardage, incompletions, interceptions, touchdowns, and attempts. A passer rating’s score can range from 0 to 158.3. A player with 0 passer rating is bad, and it is the worst you can possibly earn, whereas 158.3 is perfect. Players with a perfect passer rating often have minimal incompletions, no interceptions, plenty of completions/efficiency, and, of course, touchdowns.</p>
+<pre class="r"><code>sevenpass &lt;- read_csv(&quot;passingdata/2017QBPass.csv&quot;)
+eightpass &lt;- read_csv(&quot;passingdata/2018PassingStats.csv&quot;)
+ninepass &lt;- read_csv(&quot;passingdata/2019PassingStats.csv&quot;)</code></pre>
+<p>First, we’ll start off with the 2017 quarterbacks. We’ll put passer rating on the y-axis, wins on the x-axis, and the size of the bubbles will be the all-purpose yardage. It will give us a good look on the relation between all-purpose yardage and wins, with a compliment from passer rating. It should show how efficient/important a quarterback’s rushing is with their passing.</p>
+<pre class="r"><code>seahawk &lt;- sevenpass %&gt;% filter(Player == &quot;Russell Wilson&quot;)</code></pre>
+<pre><code>## Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<pre class="r"><code>texan &lt;- sevenpass %&gt;% filter(Player == &quot;Deshaun Watson&quot;)
+cowboy &lt;- sevenpass %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+titan &lt;- sevenpass %&gt;% filter(Player == &quot;Marcus Mariota&quot;)
+bear &lt;- sevenpass %&gt;% filter(Player == &quot;Mitchell Trubisky&quot;)
+panther &lt;- sevenpass %&gt;% filter(Player == &quot;Cam Newton&quot;)
+
+ggplot() + geom_point(data=sevenpass, aes(x=W, y=`Rate`, size=AllPurposeYards)) + 
+geom_point(data=seahawk, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;green&quot;) +
+geom_point(data=texan, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;red&quot;) +
+  geom_point(data=cowboy, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;navy blue&quot;) +
+  geom_point(data=titan, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;light blue&quot;) +
+  geom_point(data=bear, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;orange&quot;) +
+  geom_point(data=panther, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;blue&quot;) + labs(title=&quot;2017 All-Purpose Yards In Relation To Wins&quot;, subtitle=&quot;Dual-threat quarterbacks are among the middle of the pack&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Wins&quot;, y=&quot;Passer Rating&quot;) + theme_bw()</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (geom_point).</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/31/all-purpose-yardage-wins/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+Obviously, dual-threat quarterbacks were in the middle of the pack in 2017, but there were some quarterbacks that won more than average. It is also interesting that the size of the bubble tends to be bigger as the wins get higher, meaning that the more all-purpose yardage you have, the easier it is to win.</p>
+<p>2018 is when things get a little more interesting. Adding Patrick Mahomes, Lamar Jackson, and Josh Allen helps with the all-purpose yardage relating to wins.</p>
+<pre class="r"><code>seahawktwo &lt;- eightpass %&gt;% filter(Player == &quot;Russell Wilson&quot;)</code></pre>
+<pre><code>## Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<pre class="r"><code>texantwo &lt;- eightpass %&gt;% filter(Player == &quot;Deshaun Watson&quot;)
+cowboytwo &lt;- eightpass %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+titantwo &lt;- eightpass %&gt;% filter(Player == &quot;Marcus Mariota&quot;)
+beartwo &lt;- eightpass %&gt;% filter(Player == &quot;Mitchell Trubisky&quot;)
+panthertwo &lt;- eightpass %&gt;% filter(Player == &quot;Cam Newton&quot;)
+chieftwo &lt;- eightpass %&gt;% filter(Player == &quot;Patrick Mahomes&quot;)
+raventwo &lt;- eightpass %&gt;% filter(Player == &quot;Lamar Jackson&quot;)
+billtwo &lt;- eightpass %&gt;% filter(Player == &quot;Josh Allen&quot;)
+
+ggplot() + geom_point(data=eightpass, aes(x=W, y=`Rate`, size=AllPurposeYards)) + 
+geom_point(data=seahawktwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;green&quot;) +
+geom_point(data=texantwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;red&quot;) +
+  geom_point(data=cowboytwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;navy blue&quot;) +
+  geom_point(data=chieftwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;red&quot;) +
+  geom_point(data=raventwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;purple&quot;) +
+  geom_point(data=billtwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;blue&quot;) +
+  geom_point(data=titantwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;light blue&quot;) +
+  geom_point(data=beartwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;orange&quot;) +
+  geom_point(data=panthertwo, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;blue&quot;) + labs(title=&quot;2018 All-Purpose Yards In Relation To Wins&quot;, subtitle=&quot;Dual-threat quarterbacks demolish the competition, winning more than ever&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Wins&quot;, y=&quot;Passer Rating&quot;) + theme_bw()</code></pre>
+<pre><code>## Warning: Removed 3 rows containing missing values (geom_point).</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/31/all-purpose-yardage-wins/index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+Unsurprisingly, dual-threat quarterbacks absolutely dominated the chart, especially on the win range. Quarterbacks like Patrick Mahomes, Mitchell Trubisky, and Deshaun Watson do a great job at proving that rushing ability plays a big factor in quarterback play.</p>
+<p>Still not convinced? 2019 is the more interesting chart. Players like Lamar Jackson and Josh Allen finally get to start a full season, and they definitely did a lot to prove they were game-changing players in terms of the rushing ability, and their ability to win games.</p>
+<pre class="r"><code>seahawkthree &lt;- ninepass %&gt;% filter(Player == &quot;Russell Wilson&quot;)</code></pre>
+<pre><code>## Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<pre class="r"><code>texanthree &lt;- ninepass %&gt;% filter(Player == &quot;Deshaun Watson&quot;)
+cowboythree &lt;- ninepass %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+titanthree &lt;- ninepass %&gt;% filter(Player == &quot;Marcus Mariota&quot;)
+bearthree &lt;- ninepass %&gt;% filter(Player == &quot;Mitchell Trubisky&quot;)
+pantherthree &lt;- ninepass %&gt;% filter(Player == &quot;Cam Newton&quot;)
+chiefthree &lt;- ninepass %&gt;% filter(Player == &quot;Patrick Mahomes&quot;)
+raventhree &lt;- ninepass %&gt;% filter(Player == &quot;Lamar Jackson&quot;)
+billthree &lt;- ninepass %&gt;% filter(Player == &quot;Josh Allen&quot;)
+cardinalthree &lt;- ninepass %&gt;% filter(Player == &quot;Kyler Murray&quot;)
+
+ggplot() + geom_point(data=ninepass, aes(x=W, y=`Rate`, size=AllPurposeYards)) + 
+geom_point(data=seahawkthree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;green&quot;) +
+geom_point(data=texanthree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;red&quot;) +
+  geom_point(data=chiefthree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;red&quot;) +
+  geom_point(data=raventhree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;purple&quot;) +
+  geom_point(data=billthree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;blue&quot;) +
+  geom_point(data=cardinalthree, aes(x=W, y=Rate, size=AllPurposeYards), color=&quot;red&quot;) +
+  geom_point(data=cowboythree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;navy blue&quot;) +
+  geom_point(data=titanthree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;light blue&quot;) +
+  geom_point(data=bearthree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;orange&quot;) +
+  geom_point(data=pantherthree, aes(x=W, y=`Rate`, size=AllPurposeYards), color=&quot;blue&quot;) + labs(title=&quot;2019 All-Purpose Yards In Relation To Wins&quot;, subtitle=&quot;Lamar dominates, dual-threat quarterbacks follow, winning more games and amounting more yards than ever before&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Wins&quot;, y=&quot;Passer Rating&quot;) + theme_bw()</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (geom_point).</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/31/all-purpose-yardage-wins/index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+As you can see on the chart, almost every quarterback towards the top of the chart are dual-threat quarterbacks. Russell Wilson, Lamar Jackson, Patrick Mahomes, and more continue to lead the league in all-purpose yardage and wins.</p>
+<p>All in all, dual-threat quarterbacks are taking over the NFL. The NFL continues to evolve, and the quarterbacks evolve with it. As the years go by, more dual-threat quarterbacks enter the league, and evidently, they win more. If winning is the only thing that matters in the NFL, why don’t more teams try and find themselves a dual-threat quarterback? It may be easier said than done, but if more teams strategized around a dual-threat kind of offense, it is evident within the visuals that they would win more games. Dual-threat quarterbacks rule the league, and especially within the last three years, more and more dual-threat quarterbacks will top the charts. It’s hard to see the trend going any other way other than dual-threat domination at the quarterback position.</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

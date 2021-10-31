@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Quarterback Passing Yardage - Michael Mallgrave&#39;s Github Site</title>
+<meta property="og:title" content="Quarterback Passing Yardage - Michael Mallgrave&#39;s Github Site">
+
+
+  <link href='http://michaelmallgrave.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">5 min read</span>
+    
+
+    <h1 class="article-title">Quarterback Passing Yardage</h1>
+
+    
+    <span class="article-date">2021-10-28</span>
+    
+
+    <div class="article-content">
+      
+<script src="http://michaelmallgrave.github.io/2021/10/28/quarterback-passing-yardage/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>As far as passing yardage goes, the process will be similar. This time, I’ll use a scatterplot chart to chart passing yardage with the exact same quarterbacks from each year. First, I’ll still load in tidyverse and the datasets, however these datasets will be passing focused.</p>
+<pre class="r"><code>library(tidyverse)
+library(ggbeeswarm)
+library(ggrepel)
+set.seed(1234)</code></pre>
+<pre class="r"><code>sevenpass &lt;- read_csv(&quot;passingdata/2017QBPass.csv&quot;)
+eightpass &lt;- read_csv(&quot;passingdata/2018PassingStats.csv&quot;)
+ninepass &lt;- read_csv(&quot;passingdata/2019PassingStats.csv&quot;)</code></pre>
+<p>For 2017, we’ll still use Wilson, Prescott, Newton, Trubisky, Watson, and Mariota.</p>
+<pre class="r"><code>sea &lt;- sevenpass %&gt;% filter(Player == &quot;Russell Wilson&quot;)</code></pre>
+<pre><code>## Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<pre class="r"><code>dal &lt;- sevenpass %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+hou &lt;- sevenpass %&gt;% filter(Player== &quot;Deshaun Watson&quot;)
+car &lt;- sevenpass %&gt;% filter(Player == &quot;Cam Newton&quot;)
+chi &lt;- sevenpass %&gt;% filter(Player == &quot;Mitchell Trubisky&quot;)
+ten &lt;- sevenpass %&gt;% filter(Player == &quot;Marcus Mariota&quot;)
+ggplot() + geom_beeswarm(data=sevenpass, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;grey&quot;) + geom_beeswarm(data=sea, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#69BE28&quot;) + geom_text_repel(data=sea, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=dal, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#041E42&quot;) + geom_text_repel(data=dal, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=hou, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#A71930&quot;) + geom_text_repel(data=hou, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=car, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#0085CA&quot;) + geom_text_repel(data=car, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=chi, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#C83803&quot;) + geom_text_repel(data=chi, aes(x=`Cmp%`, y=PassYds, label=Player)) + 
+geom_beeswarm(data=ten, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#4B92DB&quot;) + geom_text_repel(data=ten, aes(x=`Cmp%`, y=PassYds, label=Player)) + labs(title=&quot;2017 Passing Yards In Relation to Completion Percentage&quot;, subtitle=&quot;Dual-threat quarterbacks are among the middle of the pack&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Completion Percentage&quot;, y=&quot;Passing Yards&quot;) + theme_linedraw()</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (position_beeswarm).</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/28/quarterback-passing-yardage/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+As you can see, the passing yardage is fairly average compared to the rest of the league’s quarterbacks. Quarterbacks such as Deshaun Watson and Mitchell Trubisky don’t show up on the chart because they started midway through the season, not allowing them to rack up yardage. From the quarterbacks on the list, you could say they were fairly average outside of Russell Wilson.</p>
+<p>For 2018, we will still add Lamar Jackson, Josh Allen, and Patrick Mahomes.</p>
+<pre class="r"><code>seathree &lt;- eightpass %&gt;% filter(Player == &quot;Russell Wilson&quot;)</code></pre>
+<pre><code>## Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<pre class="r"><code>dalthree &lt;- eightpass %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+houthree &lt;- eightpass %&gt;% filter(Player== &quot;Deshaun Watson&quot;)
+carthree &lt;- eightpass %&gt;% filter(Player == &quot;Cam Newton&quot;)
+chithree &lt;- eightpass %&gt;% filter(Player == &quot;Mitchell Trubisky&quot;)
+tenthree &lt;- eightpass %&gt;% filter(Player == &quot;Marcus Mariota&quot;)
+kcthree &lt;- eightpass %&gt;% filter(Player == &quot;Patrick Mahomes&quot;)
+bufthree &lt;- eightpass %&gt;% filter(Player == &quot;Josh Allen&quot;)
+balthree &lt;- eightpass %&gt;% filter(Player == &quot;Lamar Jackson&quot;)
+
+ggplot() + geom_beeswarm(data=eightpass, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;grey&quot;) + geom_beeswarm(data=seathree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;#69BE28&quot;) + geom_text_repel(data=seathree, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=dalthree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;#041E42&quot;) + geom_text_repel(data=dalthree, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=houthree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;#A71930&quot;) + geom_text_repel(data=houthree, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=carthree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;#0085CA&quot;) + geom_text_repel(data=carthree, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=chithree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;#C83803&quot;) + geom_text_repel(data=chithree, aes(x=`Cmp%`, y=PassYds, label=Player)) + 
+  geom_beeswarm(data=bufthree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;blue&quot;) + geom_text_repel(data=bufthree, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+  geom_beeswarm(data=balthree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;purple&quot;) + geom_text_repel(data=balthree, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+  geom_beeswarm(data=kcthree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;red&quot;) + geom_text_repel(data=kcthree, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=tenthree, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;#4B92DB&quot;) + geom_text_repel(data=tenthree, aes(x=`Cmp%`, y=PassYds, label=Player)) + labs(title=&quot;2018 Passing Yards In Relation to Completion Percentage&quot;, subtitle=&quot;Dual-threat quarterbacks are among the most efficient quarterbacks&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Completion Percentage&quot;, y=&quot;Passing Yards&quot;) + theme_linedraw()</code></pre>
+<pre><code>## Warning: Removed 3 rows containing missing values (position_beeswarm).</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/28/quarterback-passing-yardage/index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+Posting a breakout year in 2018, Patrick Mahomes emerged as one of the best quarterbacks in the NFL. He did so with just his passing yardage, which is even more impressive when you add his rushing totals. In 2018, dual-threat quarterbacks posted decent passing yardage, while also maintaining a steady medium when it comes to rushing yardage. Josh Allen and Lamar Jackson don’t show up very significantly due to starting a small amount of games in 2018.</p>
+<p>For 2019, #1 overall pick Kyler Murray emerged as the Arizona Cardinal’s starting quarterback, so he will be added within 2019’s beeswarm.</p>
+<pre class="r"><code>seanine &lt;- ninepass %&gt;% filter(Player == &quot;Russell Wilson&quot;)</code></pre>
+<pre><code>## Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<pre class="r"><code>dalnine &lt;- ninepass %&gt;% filter(Player == &quot;Dak Prescott&quot;)
+hounine &lt;- ninepass %&gt;% filter(Player== &quot;Deshaun Watson&quot;)
+carnine &lt;- ninepass %&gt;% filter(Player == &quot;Cam Newton&quot;)
+chinine &lt;- ninepass %&gt;% filter(Player == &quot;Mitchell Trubisky&quot;)
+tennine &lt;- ninepass %&gt;% filter(Player == &quot;Marcus Mariota&quot;)
+kcnine &lt;- ninepass %&gt;% filter(Player == &quot;Patrick Mahomes&quot;)
+bufnine &lt;- ninepass %&gt;% filter(Player == &quot;Josh Allen&quot;)
+balnine &lt;- ninepass %&gt;% filter(Player == &quot;Lamar Jackson&quot;)
+arinine &lt;- ninepass %&gt;% filter(Player == &quot;Kyler Murray&quot;)
+ggplot() + geom_beeswarm(data=ninepass, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;grey&quot;) + geom_beeswarm(data=seanine, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#69BE28&quot;) + geom_text_repel(data=seanine, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=dalnine, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#041E42&quot;) + geom_text_repel(data=dalnine, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=hounine, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#A71930&quot;) + geom_text_repel(data=hounine, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=carnine, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#0085CA&quot;) + geom_text_repel(data=carnine, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=chinine, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#C83803&quot;) + geom_text_repel(data=chinine, aes(x=`Cmp%`, y=PassYds, label=Player)) + 
+    geom_beeswarm(data=bufnine, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;blue&quot;) + geom_text_repel(data=bufnine, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+  geom_beeswarm(data=balnine, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;purple&quot;) + geom_text_repel(data=balnine, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+  geom_beeswarm(data=kcnine, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;red&quot;) + geom_text_repel(data=kcnine, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+    geom_beeswarm(data=arinine, groupOnX = FALSE, aes(x=`Cmp%`, y=PassYds), color=&quot;red&quot;) + geom_text_repel(data=arinine, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+geom_beeswarm(data=tennine, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#4B92DB&quot;) + geom_text_repel(data=tennine, aes(x=`Cmp%`, y=PassYds, label=Player)) + labs(title=&quot;2019 Passing Yardage In Reltaion To Completion Percentage&quot;, subtitle=&quot;Dual-threat quarterbacks scream efficiency&quot;, caption=&quot;Michael Mallgrave Source:Fantasydata.com&quot;, x=&quot;Completion Percentage&quot;, y=&quot;Passing Yards&quot;) + theme_linedraw()</code></pre>
+<pre><code>## Warning: Removed 4 rows containing missing values (position_beeswarm).</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/10/28/quarterback-passing-yardage/index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+Impressively, 4 out of the 8 dual-threat quarterbacks were among the best in the league when solely talking about passing yardage and completion percentage. Dak Prescott, Russell Wilson, Deshaun Watson, and Patrick Mahomes were extremely efficient, putting them above 60% of the competition in terms of passing yardage.
+Alternatively, some people may say that yardage doesn’t necessarily cover all the bases, and although passing yardage charts show dual-threat quarterbacks finishing within the middle of the pack, what would happen if you combined passing yardage and rushing yardage? What would happen if we factored in wins?</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+
