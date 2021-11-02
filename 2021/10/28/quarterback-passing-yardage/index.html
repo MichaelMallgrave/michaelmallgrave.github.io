@@ -92,7 +92,9 @@ hou &lt;- sevenpass %&gt;% filter(Player== &quot;Deshaun Watson&quot;)
 car &lt;- sevenpass %&gt;% filter(Player == &quot;Cam Newton&quot;)
 chi &lt;- sevenpass %&gt;% filter(Player == &quot;Mitchell Trubisky&quot;)
 ten &lt;- sevenpass %&gt;% filter(Player == &quot;Marcus Mariota&quot;)
-ggplot() + geom_beeswarm(data=sevenpass, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;grey&quot;) + geom_beeswarm(data=sea, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#69BE28&quot;) + geom_text_repel(data=sea, aes(x=`Cmp%`, y=PassYds, label=Player)) +
+ggplot() + geom_beeswarm(data=sevenpass, groupOnX = TRUE, 
+aes(x=`Cmp%`, y=PassYds), color=&quot;grey&quot;) + geom_beeswarm(data=sea, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds),
+                                                                                            color=&quot;#69BE28&quot;) + geom_text_repel(data=sea, aes(x=`Cmp%`, y=PassYds, label=Player)) +
 geom_beeswarm(data=dal, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#041E42&quot;) + geom_text_repel(data=dal, aes(x=`Cmp%`, y=PassYds, label=Player)) +
 geom_beeswarm(data=hou, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#A71930&quot;) + geom_text_repel(data=hou, aes(x=`Cmp%`, y=PassYds, label=Player)) +
 geom_beeswarm(data=car, groupOnX = TRUE, aes(x=`Cmp%`, y=PassYds), color=&quot;#0085CA&quot;) + geom_text_repel(data=car, aes(x=`Cmp%`, y=PassYds, label=Player)) +
