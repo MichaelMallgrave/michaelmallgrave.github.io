@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.88.1" />
+
+
+<title>Special Teams/Controlling Possession - Michael Mallgrave&#39;s Github Site</title>
+<meta property="og:title" content="Special Teams/Controlling Possession - Michael Mallgrave&#39;s Github Site">
+
+
+  <link href='http://michaelmallgrave.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/rstudio">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">16 min read</span>
+    
+
+    <h1 class="article-title">Special Teams/Controlling Possession</h1>
+
+    
+    <span class="article-date">2021-12-05</span>
+    
+
+    <div class="article-content">
+      
+<script src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>As the NFL progresses into the game it is today, there’s been two parts of the game that have continuously been consistent and important. In the NFL, the two main parts of the game are offense and defense. What seems to be lost in the mix is special teams and controlling the game from a statistical standpoint. In this particular instance, we will be looking at kickoff return yardage, field goal percentage, and time of possession through the previous three seasons.</p>
+<pre class="r"><code>library(tidyverse)
+library(ggbeeswarm)
+library(ggrepel)
+library(scales)
+library(ggalt)
+library(ggbump)</code></pre>
+<pre class="r"><code>eightpunt &lt;- read_csv(&quot;data/r2018specialteams.csv&quot;)</code></pre>
+<pre><code>## Rows: 32 Columns: 8</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): Team
+## dbl (7): KickoffYRt, FGPCT, PuntYRt, ATOPPCT, nonrelevant, notrelevant, W</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>ninepunt &lt;- read_csv(&quot;data/r2019specialteams.csv&quot;)</code></pre>
+<pre><code>## Rows: 32 Columns: 8</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): Team
+## dbl (7): KickoffYRt, FGPCT, PuntYRt, ATOPPCT, nonrelevant, notrelevant, W</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>twentypunt &lt;- read_csv(&quot;data/r2020specialteams.csv&quot;)</code></pre>
+<pre><code>## Rows: 32 Columns: 8</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): Team
+## dbl (7): KickoffYRt, FGPCT, PuntYRt, ATOPPCT, nonrelevant, notrelevant, W</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>First, we will look at kickoff return yardage. In the beginning of the game, at halftime, and after a team scores, that team will kickoff. 60% of the time, the kickoff will result in a touchback, but that other 40%, there is a chance it can be returned. The more yards you gain on a return, the better off your offense will be when they get out on the field. In theory, the shorter the distance to goal, the easier it is to score. I’ve highlighted all of the playoff teams in each year, so the more successful and winningest teams are more visible. Are kickoff returns more impactful than we are led to believe?</p>
+<pre class="r"><code>saint &lt;- eightpunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+ram &lt;- eightpunt %&gt;% filter(Team == &quot;Los Angeles Rams&quot;)
+bear &lt;- eightpunt %&gt;% filter(Team == &quot;Chicago Bears&quot;)
+cowboy &lt;- eightpunt %&gt;% filter(Team == &quot;Dallas Cowboys&quot;)
+seahawk &lt;- eightpunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+eagle &lt;- eightpunt %&gt;% filter(Team == &quot;Philadelphia Eagles&quot;)
+chief &lt;- eightpunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+patriot &lt;- eightpunt %&gt;% filter(Team == &quot;New England Patriots&quot;)
+texan &lt;- eightpunt %&gt;% filter(Team == &quot;Houston Texans&quot;)
+raven &lt;- eightpunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+charger &lt;- eightpunt %&gt;% filter(Team == &quot;Los Angeles Chargers&quot;)
+colt &lt;- eightpunt %&gt;% filter(Team == &quot;Indianapolis Colts&quot;)
+
+ggplot() + geom_point(data=eightpunt, aes(x=W, y=KickoffYRt)) + geom_smooth(data=eightpunt, aes(x=W, y=KickoffYRt), method=&quot;lm&quot;) + 
+  geom_point(data=saint, aes(x=W, y=KickoffYRt), color=&quot;gold&quot;, size=4) +
+    geom_point(data=ram, aes(x=W, y=KickoffYRt), color=&quot;blue&quot;, size=4) +
+    geom_point(data=bear, aes(x=W, y=KickoffYRt), color=&quot;orange&quot;, size=4) +
+    geom_point(data=cowboy, aes(x=W, y=KickoffYRt), color=&quot;navy&quot;, size=4) +
+    geom_point(data=seahawk, aes(x=W, y=KickoffYRt), color=&quot;lightgreen&quot;, size=4) +
+    geom_point(data=eagle, aes(x=W, y=KickoffYRt), color=&quot;green&quot;, size=4) +  geom_point(data=chief, aes(x=W, y=KickoffYRt), color=&quot;red&quot;, size=4) +  
+  geom_point(data=patriot, aes(x=W, y=KickoffYRt), color=&quot;navy&quot;, size=4) +
+  
+  geom_point(data=texan, aes(x=W, y=KickoffYRt), color=&quot;blue&quot;, size=4) +
+geom_point(data=raven, aes(x=W, y=KickoffYRt), color=&quot;purple&quot;, size=4) +
+  geom_point(data=charger, aes(x=W, y=KickoffYRt), color=&quot;lightblue&quot;, size=4) +
+  geom_point(data=colt, aes(x=W, y=KickoffYRt), color=&quot;blue&quot;, size=4) + labs(title=&quot;2018 Average Kickoff Return Yardage In Relation To Wins&quot;, subtitle=&quot;Teams with more wins tend to be above average&quot;, caption=&quot;Michael Mallgrave Source: Sports-reference.com&quot;, x=&quot;Wins&quot;, y=&quot;Average Kickoff Return Yardage&quot;) + theme_minimal()</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+In 2018, the stats don’t really show much aside from about half of the playoff teams being above the average kickoff return yardage. When there is a touchback, the ball is automatically spotted on the 25-yard line. Some may say that anything other than a 25+ yard return wouldn’t be effective, but the way kickoff return yardage works is that it starts wherever you field the kickoff. a 20-yard return from the 5 yard line puts you in the same spot as a touchback. Let’s take a look at 2019 and see if there is more of a trend.</p>
+<pre class="r"><code>saints &lt;- ninepunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+niners &lt;- ninepunt %&gt;% filter(Team == &quot;San Francisco 49ers&quot;)
+packers &lt;- ninepunt %&gt;% filter(Team == &quot;Green Bay Packers&quot;)
+vikings &lt;- ninepunt %&gt;% filter(Team == &quot;Minnesota Vikings&quot;)
+seahawks &lt;- ninepunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+eagles &lt;- ninepunt %&gt;% filter(Team == &quot;Philadelphia Eagles&quot;)
+chiefs &lt;- ninepunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+patriots &lt;- ninepunt %&gt;% filter(Team == &quot;New England Patriots&quot;)
+texans &lt;- ninepunt %&gt;% filter(Team == &quot;Houston Texans&quot;)
+ravens &lt;- ninepunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+titans &lt;- ninepunt %&gt;% filter(Team == &quot;Tennessee Titans&quot;)
+bills &lt;- ninepunt %&gt;% filter(Team == &quot;Buffalo Bills&quot;)
+
+ggplot() + geom_point(data=ninepunt, aes(x=W, y=KickoffYRt)) + geom_smooth(data=ninepunt, aes(x=W, y=KickoffYRt), method=&quot;lm&quot;) + 
+  geom_point(data=saints, aes(x=W, y=KickoffYRt), color=&quot;gold&quot;, size=4) +
+    geom_point(data=niners, aes(x=W, y=KickoffYRt), color=&quot;red&quot;, size=4) +
+    geom_point(data=packers, aes(x=W, y=KickoffYRt), color=&quot;yellow&quot;, size=4) +
+    geom_point(data=vikings, aes(x=W, y=KickoffYRt), color=&quot;purple&quot;, size=4) +
+    geom_point(data=seahawks, aes(x=W, y=KickoffYRt), color=&quot;lightgreen&quot;, size=4) +
+    geom_point(data=eagles, aes(x=W, y=KickoffYRt), color=&quot;green&quot;, size=4) +  geom_point(data=chiefs, aes(x=W, y=KickoffYRt), color=&quot;red&quot;, size=4) +  
+  geom_point(data=patriots, aes(x=W, y=KickoffYRt), color=&quot;red&quot;, size=4) +
+  
+  geom_point(data=texans, aes(x=W, y=KickoffYRt), color=&quot;blue&quot;, size=4) +
+geom_point(data=ravens, aes(x=W, y=KickoffYRt), color=&quot;purple&quot;, size=4) +
+  geom_point(data=titans, aes(x=W, y=KickoffYRt), color=&quot;lightblue&quot;, size=4) +
+  geom_point(data=bills, aes(x=W, y=KickoffYRt), color=&quot;blue&quot;, size=4) + labs(title=&quot;2019 Average Kickoff Return Yardage In Relation To Wins&quot;, subtitle=&quot;Most playoff teams dominate the average.&quot;, caption=&quot;Michael Mallgrave Source: Sports-reference.com&quot;, x=&quot;Wins&quot;, y=&quot;Average Kickoff Return Yardage&quot;) + theme_minimal()</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>In 2019, the trend becomes a lot more visible. Playoff teams that are highlighted seem to dominate the non-playoff teams. According to the average trend line, 7/12 of the teams that made the playoffs had an above average kickoff return.</p>
+<pre class="r"><code>saintsone &lt;- twentypunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+teamsone &lt;- twentypunt %&gt;% filter(Team == &quot;Washington Football Team&quot;)
+packersone &lt;- twentypunt %&gt;% filter(Team == &quot;Green Bay Packers&quot;)
+bearsone &lt;- twentypunt %&gt;% filter(Team == &quot;Chicago Bears&quot;)
+seahawksone &lt;- twentypunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+bucsone &lt;- twentypunt %&gt;% filter(Team == &quot;Tampa Bay Buccaneers&quot;)
+chiefsone &lt;- twentypunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+brownsone &lt;- twentypunt %&gt;% filter(Team == &quot;Cleveland Browns&quot;)
+coltsone &lt;- twentypunt %&gt;% filter(Team == &quot;Indianapolis Colts&quot;)
+ravensone &lt;- twentypunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+titansone &lt;- twentypunt %&gt;% filter(Team == &quot;Tennessee Titans&quot;)
+billsone &lt;- twentypunt %&gt;% filter(Team == &quot;Buffalo Bills&quot;)
+ramsone &lt;- twentypunt %&gt;% filter(Team == &quot;Los Angeles Rams&quot;)
+steelersone &lt;- twentypunt %&gt;% filter(Team == &quot;Pittsburgh Steelers&quot;)
+
+ggplot() + geom_point(data=twentypunt, aes(x=W, y=KickoffYRt)) + geom_smooth(data=twentypunt, aes(x=W, y=KickoffYRt), method=&quot;lm&quot;) + 
+  geom_point(data=saintsone, aes(x=W, y=KickoffYRt), color=&quot;gold&quot;, size=4) +
+    geom_point(data=teamsone, aes(x=W, y=KickoffYRt), color=&quot;red&quot;, size=4) +
+    geom_point(data=packersone, aes(x=W, y=KickoffYRt), color=&quot;yellow&quot;, size=4) +
+    geom_point(data=bearsone, aes(x=W, y=KickoffYRt), color=&quot;orange&quot;, size=4) +
+    geom_point(data=seahawksone, aes(x=W, y=KickoffYRt), color=&quot;lightgreen&quot;, size=4) +
+    geom_point(data=bucsone, aes(x=W, y=KickoffYRt), color=&quot;red&quot;, size=4) +  geom_point(data=chiefsone, aes(x=W, y=KickoffYRt), color=&quot;red&quot;, size=4) +  
+  geom_point(data=brownsone, aes(x=W, y=KickoffYRt), color=&quot;brown&quot;, size=4) +
+  
+  geom_point(data=coltsone, aes(x=W, y=KickoffYRt), color=&quot;blue&quot;, size=4) +
+geom_point(data=ravensone, aes(x=W, y=KickoffYRt), color=&quot;purple&quot;, size=4) +
+  geom_point(data=titansone, aes(x=W, y=KickoffYRt), color=&quot;lightblue&quot;, size=4) +
+  geom_point(data=billsone, aes(x=W, y=KickoffYRt), color=&quot;blue&quot;, size=4) + 
+  geom_point(data=ramsone, aes(x=W, y=KickoffYRt), color=&quot;blue&quot;, size=4) +
+  geom_point(data=steelersone, aes(x=W, y=KickoffYRt), color=&quot;yellow&quot;, size=4) + labs(title=&quot;2020 Average Kickoff Return Yardage In Relation To Wins&quot;, subtitle=&quot;Most in playoff contention have higher return yardage&quot;, caption=&quot;Michael Mallgrave Source: Sports-reference.com&quot;, x=&quot;Wins&quot;, y=&quot;Rush Yards&quot;) + theme_minimal()</code></pre>
+<pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+In 2020, playoff teams were all over the place. Something that is worth noting is that not every team that wins the most makes the playoffs. For an example, the Washington Football Team (red dot) made the playoffs at 7-9, which is almost unheard of. With a division as close as that one, it’s very rare for a team to have a negative record and still make the playoffs by winning their division. It is also worth noting that most teams that were on the more right side of the graph, almost always were above the average trend line.</p>
+<p>Still not convinced that special teams makes much of a difference? We will now look at field goal percentage. Having a good kicker can make or break a game. I’m sure we have all had our favorite teams lose by missing a field goal or a bundle of field goals. In a game where most games are decided by single digits, every point matters. With that being said, field goals are one of the most important aspects of special teams. When your offense can’t score a touchdown, the next best thing is 3 points.</p>
+<pre class="r"><code>saintx &lt;- eightpunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+ramx &lt;- eightpunt %&gt;% filter(Team == &quot;Los Angeles Rams&quot;)
+bearx &lt;- eightpunt %&gt;% filter(Team == &quot;Chicago Bears&quot;)
+cowboyx &lt;- eightpunt %&gt;% filter(Team == &quot;Dallas Cowboys&quot;)
+seahawkx &lt;- eightpunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+eaglex &lt;- eightpunt %&gt;% filter(Team == &quot;Philadelphia Eagles&quot;)
+chiefx &lt;- eightpunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+patriotx &lt;- eightpunt %&gt;% filter(Team == &quot;New England Patriots&quot;)
+texanx &lt;- eightpunt %&gt;% filter(Team == &quot;Houston Texans&quot;)
+ravenx &lt;- eightpunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+chargerx &lt;- eightpunt %&gt;% filter(Team == &quot;Los Angeles Chargers&quot;)
+coltx &lt;- eightpunt %&gt;% filter(Team == &quot;Indianapolis Colts&quot;)
+
+ggplot() + geom_beeswarm(data=eightpunt, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;grey&quot;) + geom_beeswarm(data=saintx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#69BE28&quot;) + geom_text_repel(data=saintx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=ramx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;blue&quot;) + geom_text_repel(data=ramx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=bearx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;orange&quot;) + geom_text_repel(data=bearx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=cowboyx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;navy&quot;) + geom_text_repel(data=cowboyx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=seahawkx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;lightgreen&quot;) + geom_text_repel(data=seahawkx, aes(x=W, y=FGPCT, label=Team)) + 
+  geom_beeswarm(data=eaglex, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;blue&quot;) + geom_text_repel(data=eaglex, aes(x=W, y=FGPCT, label=Team)) +
+  geom_beeswarm(data=chiefx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;red&quot;) + geom_text_repel(data=chiefx, aes(x=W, y=FGPCT, label=Team)) +
+  geom_beeswarm(data=patriotx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;blue&quot;) + geom_text_repel(data=patriotx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=texanx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;red&quot;) + geom_text_repel(data=texanx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=ravenx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;purple&quot;) + geom_text_repel(data=ravenx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=chargerx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#4B92DB&quot;) + geom_text_repel(data=chargerx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=coltx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#4B92DB&quot;) + geom_text_repel(data=coltx, aes(x=W, y=FGPCT, label=Team)) + labs(title=&quot;2018 Field Goal Percentage In Relation To Wins&quot;, subtitle=&quot;Almost every playoff team annihilates the average&quot;, caption=&quot;Michael Mallgave Source: Sports-reference.com&quot;, x=&quot;Wins&quot;, y=&quot;Field Goal Percentage&quot;) + theme_classic()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+Similar to kickoff return yardage, the 2018 graph doesn’t show much of a trend, and it appears as if the 2018 can be used as an outlier due to the playoff teams not performing well above average on special teams. 2019 and 2020 should give us more of an idea as to how field goal percentage relates to winning within the NFL.</p>
+<pre class="r"><code>saintsxx &lt;- ninepunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+ninersxx &lt;- ninepunt %&gt;% filter(Team == &quot;San Francisco 49ers&quot;)
+packersxx &lt;- ninepunt %&gt;% filter(Team == &quot;Green Bay Packers&quot;)
+vikingsxx &lt;- ninepunt %&gt;% filter(Team == &quot;Minnesota Vikings&quot;)
+seahawksxx &lt;- ninepunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+eaglesxx &lt;- ninepunt %&gt;% filter(Team == &quot;Philadelphia Eagles&quot;)
+chiefsxx &lt;- ninepunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+patriotsxx &lt;- ninepunt %&gt;% filter(Team == &quot;New England Patriots&quot;)
+texansxx &lt;- ninepunt %&gt;% filter(Team == &quot;Houston Texans&quot;)
+ravensxx &lt;- ninepunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+titansxx &lt;- ninepunt %&gt;% filter(Team == &quot;Tennessee Titans&quot;)
+billsxx &lt;- ninepunt %&gt;% filter(Team == &quot;Buffalo Bills&quot;)
+
+ggplot() + geom_beeswarm(data=ninepunt, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;grey&quot;) + geom_beeswarm(data=saintsxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#69BE28&quot;) + geom_text_repel(data=saintx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=ninersxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;red&quot;) + geom_text_repel(data=ninersxx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=packersxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;green&quot;) + geom_text_repel(data=packersxx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=vikingsxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;purple&quot;) + geom_text_repel(data=vikingsxx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=seahawksxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;lightgreen&quot;) + geom_text_repel(data=seahawksxx, aes(x=W, y=FGPCT, label=Team)) + 
+  geom_beeswarm(data=eaglesxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;blue&quot;) + geom_text_repel(data=eaglesxx, aes(x=W, y=FGPCT, label=Team)) +
+  geom_beeswarm(data=chiefsxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;red&quot;) + geom_text_repel(data=chiefsxx, aes(x=W, y=FGPCT, label=Team)) +
+  geom_beeswarm(data=patriotsxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;red&quot;) + geom_text_repel(data=patriotsxx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=texansxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;blue&quot;) + geom_text_repel(data=texansxx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=ravensxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;purple&quot;) + geom_text_repel(data=ravensxx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=titansxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;lightblue&quot;) + geom_text_repel(data=titansxx, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=billsxx, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;blue&quot;) + geom_text_repel(data=billsxx, aes(x=W, y=FGPCT, label=Team)) + labs(title=&quot;2019 Field Goal Percentage In Relation To Wins.&quot;, caption=&quot;Michael Mallgrave Source:Sports-reference.com&quot;, subtitle=&quot;Playoff teams&quot;, x=&quot;Wins&quot;, y=&quot;Field Goal Percentage&quot;) + theme_classic()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+As shown on the graph, the playoff teams are well above the average in terms of field goal percentage. Almost every single team that made the playoffs in 2019 had an above average field goal percentage. While most of the non-playoff teams are in the middle of the pack to below average, you have to feel bad for the titans at the bottom of the graph. The Titans posted a 44.9% field goal percentage in 2019. Almost directly, a higher field goal percentage can translate to winning more games.</p>
+<pre class="r"><code>xsaint &lt;- twentypunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+xteam &lt;- twentypunt %&gt;% filter(Team == &quot;Washington Football Team&quot;)
+xpacker &lt;- twentypunt %&gt;% filter(Team == &quot;Green Bay Packers&quot;)
+xbear &lt;- twentypunt %&gt;% filter(Team == &quot;Chicago Bears&quot;)
+xseahawk &lt;- twentypunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+xbuc &lt;- twentypunt %&gt;% filter(Team == &quot;Tampa Bay Buccaneers&quot;)
+xchief &lt;- twentypunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+xbrown &lt;- twentypunt %&gt;% filter(Team == &quot;Cleveland Browns&quot;)
+xcolt &lt;- twentypunt %&gt;% filter(Team == &quot;Indianapolis Colts&quot;)
+xraven &lt;- twentypunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+xtitan &lt;- twentypunt %&gt;% filter(Team == &quot;Tennessee Titans&quot;)
+xbill &lt;- twentypunt %&gt;% filter(Team == &quot;Buffalo Bills&quot;)
+xram &lt;- twentypunt %&gt;% filter(Team == &quot;Los Angeles Rams&quot;)
+xsteeler &lt;- twentypunt %&gt;% filter(Team == &quot;Pittsburgh Steelers&quot;)
+
+ggplot() + geom_beeswarm(data=twentypunt, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;grey&quot;) + geom_beeswarm(data=xsaint, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#69BE28&quot;) + geom_text_repel(data=xsaint, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=xteam, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#041E42&quot;) + geom_text_repel(data=xteam, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=xpacker, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#A71930&quot;) + geom_text_repel(data=xpacker, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=xbear, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#0085CA&quot;) + geom_text_repel(data=xbear, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=xseahawk, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#C83803&quot;) + geom_text_repel(data=xseahawk, aes(x=W, y=FGPCT, label=Team)) + 
+  geom_beeswarm(data=xbuc, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;blue&quot;) + geom_text_repel(data=xbuc, aes(x=W, y=FGPCT, label=Team)) +
+  geom_beeswarm(data=xchief, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;purple&quot;) + geom_text_repel(data=xchief, aes(x=W, y=FGPCT, label=Team)) +
+  geom_beeswarm(data=xbrown, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;red&quot;) + geom_text_repel(data=xbrown, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=xcolt, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#4B92DB&quot;) + geom_text_repel(data=xcolt, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=xraven, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#4B92DB&quot;) + geom_text_repel(data=xraven, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=xtitan, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#4B92DB&quot;) + geom_text_repel(data=xtitan, aes(x=W, y=FGPCT, label=Team)) +
+geom_beeswarm(data=xbill, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#4B92DB&quot;) + geom_text_repel(data=xbill, aes(x=W, y=FGPCT, label=Team)) + 
+  geom_beeswarm(data=xram, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#4B92DB&quot;) + geom_text_repel(data=xram, aes(x=W, y=FGPCT, label=Team)) +
+  geom_beeswarm(data=xsteeler, groupOnX = FALSE, aes(x=W, y=FGPCT), color=&quot;#4B92DB&quot;) + geom_text_repel(data=xsteeler, aes(x=W, y=FGPCT, label=Team)) +
+  
+  labs(title=&quot;2020 Field Goal Percentage In Relation To Wins&quot;, subtitle=&quot;Playoff teams overwhelm the average, topping the FG% charts&quot;, caption=&quot;Michael Mallgrave Source: Sports-reference.com&quot;, x=&quot;Wins&quot;, y=&quot;Field Goal Percentage&quot;) + theme_minimal()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>In 2020, the graph is a little more scattered and the results are more spread out. Even with the results more spread out, the trend is still accurate. Teams that made the playoffs almost always had an above average field goal percentage. Even with a small correlation in 2018, both 2019 and 2020 show a direct correlation between winning and field goal percentage.</p>
+<p>Aside from special teams being an overlooked factor in football games, theres another way of controlling games. Time. Controlling time within a game can keep the opposing offense off of the field. Although overlooked, time of possession is important within a football game. Directly, teams that rush more than they pass tend to take more time off of the clock, due to an incomplete pass stopping the clock. Keeping your offense on the field and the opposing offense off the field is a great way to control a football game, and we will see if its directly related to winning in the NFL.</p>
+<pre class="r"><code>xsaintx &lt;- eightpunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+xramx &lt;- eightpunt %&gt;% filter(Team == &quot;Los Angeles Rams&quot;)
+xbearx &lt;- eightpunt %&gt;% filter(Team == &quot;Chicago Bears&quot;)
+xcowboyx &lt;- eightpunt %&gt;% filter(Team == &quot;Dallas Cowboys&quot;)
+xseahawkx &lt;- eightpunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+xeaglex &lt;- eightpunt %&gt;% filter(Team == &quot;Philadelphia Eagles&quot;)
+xchiefx &lt;- eightpunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+xpatriotx &lt;- eightpunt %&gt;% filter(Team == &quot;New England Patriots&quot;)
+xtexanx &lt;- eightpunt %&gt;% filter(Team == &quot;Houston Texans&quot;)
+xravenx &lt;- eightpunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+xchargerx &lt;- eightpunt %&gt;% filter(Team == &quot;Los Angeles Chargers&quot;)
+xcoltx &lt;- eightpunt %&gt;% filter(Team == &quot;Indianapolis Colts&quot;)
+
+ggplot(eightpunt, aes(x=reorder(Team, ATOPPCT), weight=ATOPPCT)) + geom_bar() + geom_bar(data=xsaintx, color=&quot;green&quot;) + geom_bar(data=xramx, color=&quot;green&quot;)+ geom_bar(data=xbearx, color=&quot;green&quot;)+ geom_bar(data=xcowboyx, color=&quot;green&quot;)+ geom_bar(data=xseahawkx, color=&quot;green&quot;)+ geom_bar(data=xeaglex, color=&quot;green&quot;)+
+  geom_bar(data=xchiefx, color=&quot;green&quot;)+ geom_bar(data=xpatriotx, color=&quot;green&quot;)+
+  geom_bar(data=xtexanx, color=&quot;green&quot;)+ geom_bar(data=xravenx, color=&quot;green&quot;)+
+  geom_bar(data=xchargerx, color=&quot;green&quot;)+ geom_bar(data=xcoltx, color=&quot;green&quot;)+
+
+labs(title=&quot;2018 Average Time of Possession Percentage Compared To Wins&quot;, subtitle=&quot;Playoff teams dramatically control games&quot;, caption=&quot;Michael Mallgrave Source:Sports-reference.com&quot;, x=&quot;Team&quot;, y=&quot;Time of Possession Percentage&quot;) + coord_flip() + theme_linedraw()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>In 2017, teams that made the playoffs are highlighted, and most teams that made the playoffs had a time of possession percentage of above 50%. You can also notice that most of the top 5 teams are run-first teams, so it makes sense that they would have more time of possession.</p>
+<pre class="r"><code>xsaintone &lt;- ninepunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+xninerone &lt;- ninepunt %&gt;% filter(Team == &quot;San Francisco 49ers&quot;)
+xpackerone &lt;- ninepunt %&gt;% filter(Team == &quot;Green Bay Packers&quot;)
+xvikingone &lt;- ninepunt %&gt;% filter(Team == &quot;Minnesota Vikings&quot;)
+xseahawkone &lt;- ninepunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+xeagleone &lt;- ninepunt %&gt;% filter(Team == &quot;Philadelphia Eagles&quot;)
+xchiefone &lt;- ninepunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+xpatriotone &lt;- ninepunt %&gt;% filter(Team == &quot;New England Patriots&quot;)
+xtexanone &lt;- ninepunt %&gt;% filter(Team == &quot;Houston Texans&quot;)
+xravenone &lt;- ninepunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+xtitanone &lt;- ninepunt %&gt;% filter(Team == &quot;Tennessee Titans&quot;)
+xbillone &lt;- ninepunt %&gt;% filter(Team == &quot;Buffalo Bills&quot;)
+
+ggplot(ninepunt, aes(x=reorder(Team, ATOPPCT), weight=ATOPPCT)) + geom_bar() + geom_bar(data=xsaintone, color=&quot;green&quot;) + geom_bar(data=xninerone, color=&quot;green&quot;)+ geom_bar(data=xpackerone, color=&quot;green&quot;)+ geom_bar(data=xvikingone, color=&quot;green&quot;)+ geom_bar(data=xeagleone, color=&quot;green&quot;)+ geom_bar(data=xchiefone, color=&quot;green&quot;)+
+  geom_bar(data=xpatriotone, color=&quot;green&quot;)+ geom_bar(data=xtexanone, color=&quot;green&quot;)+
+  geom_bar(data=xravenone, color=&quot;green&quot;)+ geom_bar(data=xtitanone, color=&quot;green&quot;)+
+  geom_bar(data=xbillone, color=&quot;green&quot;)+ geom_bar(data=xseahawkone, color=&quot;green&quot;)+
+
+ labs(title=&quot;2019 Average Time of Possession Percentage Compared To Wins&quot;, subtitle=&quot;Teams that don&#39;t control time of possession suffer&quot;, caption=&quot;Michael Mallgrave Source:Sports-reference.com&quot;, x=&quot;Team&quot;, y=&quot;Time of Possession Percentage&quot;) + coord_flip() + theme_linedraw()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>In 2019, the Baltimore Ravens topped the list with one of the most prolific rushing offenses in NFL history. The Baltimore Ravens would end up breaking the single season rushing yardage record in 2019, and it makes sense that their time of possession percentage is around 58%. Most of the teams that made the playoffs are above 50%, as they had more control over the game, and most likely winning games with some respect to time of possession.</p>
+<pre class="r"><code>xsaintsx &lt;- twentypunt %&gt;% filter(Team == &quot;New Orleans Saints&quot;)
+xteamsx &lt;- twentypunt %&gt;% filter(Team == &quot;Washington Football Team&quot;)
+xpackersx &lt;- twentypunt %&gt;% filter(Team == &quot;Green Bay Packers&quot;)
+xbearsx &lt;- twentypunt %&gt;% filter(Team == &quot;Chicago Bears&quot;)
+xseahawksx &lt;- twentypunt %&gt;% filter(Team == &quot;Seattle Seahawks&quot;)
+xbucsx &lt;- twentypunt %&gt;% filter(Team == &quot;Tampa Bay Buccaneers&quot;)
+xchiefsx &lt;- twentypunt %&gt;% filter(Team == &quot;Kansas City Chiefs&quot;)
+xbrownsx &lt;- twentypunt %&gt;% filter(Team == &quot;Cleveland Browns&quot;)
+xcoltsx &lt;- twentypunt %&gt;% filter(Team == &quot;Indianapolis Colts&quot;)
+xravensx &lt;- twentypunt %&gt;% filter(Team == &quot;Baltimore Ravens&quot;)
+xtitansx &lt;- twentypunt %&gt;% filter(Team == &quot;Tennessee Titans&quot;)
+xbillsx &lt;- twentypunt %&gt;% filter(Team == &quot;Buffalo Bills&quot;)
+xramsx &lt;- twentypunt %&gt;% filter(Team == &quot;Los Angeles Rams&quot;)
+xsteelersx &lt;- twentypunt %&gt;% filter(Team == &quot;Pittsburgh Steelers&quot;)
+
+ggplot(twentypunt, aes(x=reorder(Team, ATOPPCT), weight=ATOPPCT)) + geom_bar() + geom_bar(data=xsaintsx, color=&quot;green&quot;) + geom_bar(data=xteamsx, color=&quot;green&quot;)+ geom_bar(data=xpackersx, color=&quot;green&quot;)+ geom_bar(data=xbearsx, color=&quot;green&quot;)+ geom_bar(data=xseahawksx, color=&quot;green&quot;)+ geom_bar(data=xbucsx, color=&quot;green&quot;)+
+  geom_bar(data=xchiefsx, color=&quot;green&quot;)+ geom_bar(data=xbrownsx, color=&quot;green&quot;)+
+  geom_bar(data=xcoltsx, color=&quot;green&quot;)+ geom_bar(data=xravensx, color=&quot;green&quot;)+
+  geom_bar(data=xtitansx, color=&quot;green&quot;)+ geom_bar(data=xbillsx, color=&quot;green&quot;)+
+  geom_bar(data=xramsx, color=&quot;green&quot;)+ geom_bar(data=xsteelersx, color=&quot;green&quot;)+
+
+ labs(title=&quot;2020 Average Time of Possession Percentage Compared To Wins&quot;, subtitle=&quot;Controlling time is a key contributor to playoff success&quot;, caption=&quot;Michael Mallgrave Source:Sports-reference.com&quot;, x=&quot;Team&quot;, y=&quot;Time of Possession Percentage&quot;) + coord_flip() + theme_linedraw()</code></pre>
+<p><img src="http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/index_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+In 2020, the bar chart shows the playoff teams topping the chart. 14 of the top 17 teams on the chart are playoff teams. Controlling the time of possession within a game absolutely helps teams win games. It would be interesting to further this research and see if a run-first team is more suited to win in the NFL as compared to a balanced or pass-heavy scheme. All in all, field goal percentage, kickoff return yardage, and controlling the time within a game all correlate to a more successful team. Special teams and time control within an NFL football game are overlooked, but perhaps they shouldn’t be due to the apparent winning correlation that these variables present.</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+
+    
+  </body>
+</html>
+

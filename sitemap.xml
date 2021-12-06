@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://michaelmallgrave.github.io/2021/10/31/all-purpose-yardage-wins/</loc>
-    <lastmod>2021-10-31T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>http://michaelmallgrave.github.io/</loc>
-    <lastmod>2021-10-31T00:00:00+00:00</lastmod>
+    <lastmod>2021-12-05T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://michaelmallgrave.github.io/post/</loc>
+    <lastmod>2021-12-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://michaelmallgrave.github.io/2021/12/05/special-teams-controlling-possession/</loc>
+    <lastmod>2021-12-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://michaelmallgrave.github.io/2021/10/31/all-purpose-yardage-wins/</loc>
     <lastmod>2021-10-31T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://michaelmallgrave.github.io/2021/10/28/quarterback-passing-yardage/</loc>
